@@ -1,9 +1,24 @@
 #pragma once
 #include "Board.h"
+#include <utility>
 
-typedef sf::Keyboard kbd;
-typedef sf::Mouse mouse;
-typedef sf::RenderWindow Window;
+class Keyboard // simple class that only all takes one keyboard input at a time
+{
+private:
+	sf::Keyboard::Key key = sf::Keyboard::Key::Unknown; // default to unknown
+public:
+	void keyEvent(sf::Event e)
+	{
+		if (e.type == sf::Event::KeyPressed)
+		{
+			key = e.key.code;
+		}
+	}
+	bool isKeyPressed(sf::Keyboard::Key k)
+	{
+		return key == k;
+	}
+};
 
 class Game
 {
@@ -11,13 +26,14 @@ public:
 	Game(float w, float h);
 	Game() = delete;
 	~Game() = default;
-	void run(Window& wnd);
-	void events(Window& wnd); // event loop
-	void update(Window& wnd); // game logic
-	void draw(Window& wnd); // drawing
+	void run(sf::RenderWindow& wnd);
+	void events(sf::RenderWindow& wnd); // event loop
+	void update(sf::RenderWindow& wnd); // game logic
+	void draw(sf::RenderWindow& wnd); // drawing
 private:
 private:
 	float width;
 	float height;
 	Board board;
+	Keyboard kbd;
 };
