@@ -15,6 +15,7 @@ Board::Board(int x, int y, float width, float height)
 		for (int x = 0; x < this->width; x++)
 		{
 			tiles.at(x + this->width * y).number = 0;
+			tiles.at(x + this->width * y).pos = sf::Vector2i(x, y);
 		}
 	}
 	// create a few numbered tiles
@@ -70,6 +71,7 @@ void Board::move(Direction dir)
 									tiles.at(x1 + width * y).number = tiles.at(x + width * y).number;
 									if (x1 != x) tiles.at(x + width * y).number = 0; // this number should be empty if you 
 																					// are moving from there
+									break;
 								}
 							}
 							else // if the tile has a different number
@@ -114,6 +116,7 @@ void Board::move(Direction dir)
 									tiles.at(x1 + width * y).number = tiles.at(x + width * y).number;
 									if (x1 != x) tiles.at(x + width * y).number = 0; // this number should be empty if you 
 																					// are moving from there
+									break;
 								}
 							}
 							else // if the tile has a different number
@@ -158,6 +161,7 @@ void Board::move(Direction dir)
 									tiles.at(y1 + width * y).number = tiles.at(x + width * y).number;
 									if (y1 != x) tiles.at(x + width * y).number = 0; // this number should be empty if you 
 																					// are moving from there
+									break;
 								}
 							}
 							else // if the tile has a different number
@@ -202,6 +206,7 @@ void Board::move(Direction dir)
 									tiles.at(y1 + width * y).number = tiles.at(x + width * y).number;
 									if (y1 != x) tiles.at(x + width * y).number = 0; // this number should be empty if you 
 																						// are moving from there
+									break;
 								}
 							}
 							else // if the tile has a different number
