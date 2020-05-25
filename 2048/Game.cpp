@@ -1,5 +1,7 @@
 #include "Game.h"
 
+
+
 Game::Game(float width, float height) : width(width), height(height), board(4,4, width, height) {}
 
 void Game::run(Window& wnd)
@@ -30,6 +32,22 @@ void Game::events(Window& wnd)
 void Game::update(Window& wnd)
 {
 	// process game logic
+	if (kbd::isKeyPressed(kbd::Key::Left))
+	{
+		board.move(Direction::Left);
+	}
+	else if (kbd::isKeyPressed(kbd::Key::Right))
+	{
+		board.move(Direction::Right);
+	}
+	else if (kbd::isKeyPressed(kbd::Key::Up))
+	{
+		board.move(Direction::Up);
+	}
+	else if (kbd::isKeyPressed(kbd::Key::Down))
+	{
+		board.move(Direction::Down);
+	}
 }
 
 void Game::draw(Window& wnd)
