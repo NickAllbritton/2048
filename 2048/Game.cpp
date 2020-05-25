@@ -25,30 +25,31 @@ void Game::events(sf::RenderWindow& wnd)
 		case sf::Event::Closed:
 			wnd.close();
 			break;
+		case sf::Event::KeyPressed:
+			{
+			switch (event.key.code)
+			{
+			case sf::Keyboard::Key::Left:
+				board.move(Direction::Left);
+				break;
+			case sf::Keyboard::Key::Right:
+				board.move(Direction::Right);
+				break;
+			case sf::Keyboard::Key::Up:
+				board.move(Direction::Up);
+				break;
+			case sf::Keyboard::Key::Down:
+				board.move(Direction::Down);
+				break;
+			}
+			}
 		}
-		kbd.keyEvent(event); // get keyboard input
 	}
 }
 
 void Game::update(sf::RenderWindow& wnd)
 {
 	// process game logic
-	if (kbd.isKeyPressed(sf::Keyboard::Key::Left))
-	{
-		board.move(Direction::Left);
-	}
-	else if (kbd.isKeyPressed(sf::Keyboard::Key::Right))
-	{
-		board.move(Direction::Right);
-	}
-	else if (kbd.isKeyPressed(sf::Keyboard::Key::Up))
-	{
-		board.move(Direction::Up);
-	}
-	else if (kbd.isKeyPressed(sf::Keyboard::Key::Down))
-	{
-		board.move(Direction::Down);
-	}
 }
 
 void Game::draw(sf::RenderWindow& wnd)

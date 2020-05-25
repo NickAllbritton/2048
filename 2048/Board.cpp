@@ -45,6 +45,7 @@ void Board::move(Direction dir)
 		{
 			// start from the left and move every tile as far as it can go.
 			// if it is at x = 0 it can't be moved further left. so start at x = 1
+			// CHECK IF TILE IS EMPTY.........
 			// 1. look to tile to the left
 			// 2. if it is not empty, that means it and everything to the left of it is already as far as it can go
 			// 3. if it is empty, go back to one and check tile left of this one..
@@ -54,28 +55,32 @@ void Board::move(Direction dir)
 			{
 				for (int y = 0; y < height; y++)
 				{
-					int x1 = x - 1;
-					while (x1 >= 0)
+					if (getTile(sf::Vector2i(x, y)).number != 0)
 					{
-						if (tiles.at(x1 + width * y).number == tiles.at(x + width * y).number) // same number
-							tiles.at(x + width * y).merge(tiles, tiles.at(x1 + width * y), width);
-						else if (tiles.at(x1 + width * y).number == 0) // if it is empty
+						int x1 = x - 1;
+						while (x1 >= 0)
 						{
-							if(x1 != 0) x1 -= 1;
-							else // do not check the next over it doesn't exist...
+							if (tiles.at(x1 + width * y).number == tiles.at(x + width * y).number) // same number
+								tiles.at(x + width * y).merge(tiles, tiles.at(x1 + width * y), width);
+							else if (tiles.at(x1 + width * y).number == 0) // if it is empty
 							{
-								tiles.at(x1 + width * y).number = tiles.at(x + width * y).number;
+								if (x1 != 0) x1 -= 1;
+								else // do not check the next over it doesn't exist...
+								{
+									tiles.at(x1 + width * y).number = tiles.at(x + width * y).number;
+									if (x1 != x) tiles.at(x + width * y).number = 0; // this number should be empty if you 
+																					// are moving from there
+								}
+							}
+							else // if the tile has a different number
+							{
+								tiles.at((x1 + 1) + width * y).number = tiles.at(x + width * y).number;
 								if (x1 != x) tiles.at(x + width * y).number = 0; // this number should be empty if you 
 																				// are moving from there
 							}
 						}
-						else // if the tile has a different number
-						{
-							tiles.at((x1 + 1) + width * y).number = tiles.at(x + width * y).number;
-							if (x1 != x) tiles.at(x + width * y).number = 0; // this number should be empty if you 
-																			// are moving from there
-						}
 					}
+					else continue;
 				}
 			}
 		}
@@ -84,6 +89,7 @@ void Board::move(Direction dir)
 		{
 			// start from the right and move every tile as far as it can go.
 			// if it is at x = width - 1 it can't be moved further right. so start at x = width - 2
+			// CHECK IF TILE IS EMPTY.........
 			// 1. look to tile to the right
 			// 2. if it is not empty, that means it and everything to the right of it is already as far as it can go
 			// 3. if it is empty, go back to step 1. and check tile to the right of this one..
@@ -93,28 +99,32 @@ void Board::move(Direction dir)
 			{
 				for (int y = 0; y < height; y++)
 				{
-					int x1 = x + 1;
-					while (x1 <= width - 1)
+					if (getTile(sf::Vector2i(x, y)).number != 0)
 					{
-						if (tiles.at(x1 + width * y).number == tiles.at(x + width * y).number) // same number
-							tiles.at(x + width * y).merge(tiles, tiles.at(x1 + width * y), width);
-						else if (tiles.at(x1 + width * y).number == 0) // if it is empty
+						int x1 = x + 1;
+						while (x1 <= width - 1)
 						{
-							if (x1 != width - 1) x1 += 1;
-							else // do not check the next over it doesn't exist...
+							if (tiles.at(x1 + width * y).number == tiles.at(x + width * y).number) // same number
+								tiles.at(x + width * y).merge(tiles, tiles.at(x1 + width * y), width);
+							else if (tiles.at(x1 + width * y).number == 0) // if it is empty
 							{
-								tiles.at(x1 + width * y).number = tiles.at(x + width * y).number;
+								if (x1 != width - 1) x1 += 1;
+								else // do not check the next over it doesn't exist...
+								{
+									tiles.at(x1 + width * y).number = tiles.at(x + width * y).number;
+									if (x1 != x) tiles.at(x + width * y).number = 0; // this number should be empty if you 
+																					// are moving from there
+								}
+							}
+							else // if the tile has a different number
+							{
+								tiles.at((x1 - 1) + width * y).number = tiles.at(x + width * y).number;
 								if (x1 != x) tiles.at(x + width * y).number = 0; // this number should be empty if you 
-																				// are moving from there
+																				 // are moving from there
 							}
 						}
-						else // if the tile has a different number
-						{
-							tiles.at((x1 - 1) + width * y).number = tiles.at(x + width * y).number;
-							if (x1 != x) tiles.at(x + width * y).number = 0; // this number should be empty if you 
-																			 // are moving from there
-						}
 					}
+					else continue;
 				}
 			}
 		}
@@ -123,6 +133,7 @@ void Board::move(Direction dir)
 		{
 			// start from the left and move every tile as far as it can go.
 			// if it is at y = 0 it can't be moved further up. so start at y = 1
+			// CHECK IF TILE IS EMPTY.........
 			// 1. look to above tile
 			// 2. if it is not empty, that means it and everything above it is already as far as it can go
 			// 3. if it is empty, go back to one and check tile above this one..
@@ -132,28 +143,32 @@ void Board::move(Direction dir)
 			{
 				for (int x = 0; x < width; x++)
 				{
-					int y1 = y - 1;
-					while (y1 >= 0)
+					if (getTile(sf::Vector2i(x, y)).number != 0)
 					{
-						if (tiles.at(x + width * y1).number == tiles.at(x + width * y).number) // same number
-							tiles.at(x + width * y).merge(tiles, tiles.at(x + width * y1), width);
-						else if (tiles.at(x + width * y1).number == 0) // if it is empty
+						int y1 = y - 1;
+						while (y1 >= 0)
 						{
-							if (y1 != 0) y1 -= 1;
-							else // do not check the next over it doesn't exist...
+							if (tiles.at(x + width * y1).number == tiles.at(x + width * y).number) // same number
+								tiles.at(x + width * y).merge(tiles, tiles.at(x + width * y1), width);
+							else if (tiles.at(x + width * y1).number == 0) // if it is empty
 							{
-								tiles.at(y1 + width * y).number = tiles.at(x + width * y).number;
-								if (y1 != x) tiles.at(x + width * y).number = 0; // this number should be empty if you 
+								if (y1 != 0) y1 -= 1;
+								else // do not check the next over it doesn't exist...
+								{
+									tiles.at(y1 + width * y).number = tiles.at(x + width * y).number;
+									if (y1 != x) tiles.at(x + width * y).number = 0; // this number should be empty if you 
+																					// are moving from there
+								}
+							}
+							else // if the tile has a different number
+							{
+								tiles.at(x + width * (y1 + 1)).number = tiles.at(x + width * y).number;
+								if (y1 != y) tiles.at(x + width * y).number = 0; // this number should be empty if you 
 																				// are moving from there
 							}
 						}
-						else // if the tile has a different number
-						{
-							tiles.at(x + width * (y1 + 1)).number = tiles.at(x + width * y).number;
-							if(y1 != y) tiles.at(x + width * y).number = 0; // this number should be empty if you 
-																			// are moving from there
-						}
 					}
+					else continue;
 				}
 			}
 		}
@@ -162,6 +177,7 @@ void Board::move(Direction dir)
 		{
 			// start from the left and move every tile as far as it can go.
 			// if it is at y = height - 1 it can't be moved further down. so start at y = height - 2
+			// CHECK IF TILE IS EMPTY.........
 			// 1. look to below tile
 			// 2. if it is not empty, that means it and everything above it is already as far as it can go
 			// 3. if it is empty, go back to step 1. and check tile below this one..
@@ -171,28 +187,32 @@ void Board::move(Direction dir)
 			{
 				for (int x = 0; x < width; x++)
 				{
-					int y1 = y + 1;
-					while (y1 <= height - 1)
+					if (getTile(sf::Vector2i(x, y)).number != 0)
 					{
-						if (tiles.at(x + width * y1).number == tiles.at(x + width * y).number) // same number
-							tiles.at(x + width * y).merge(tiles, tiles.at(x + width * y1), width);
-						else if (tiles.at(x + width * y1).number == 0) // if it is empty
+						int y1 = y + 1;
+						while (y1 <= height - 1)
 						{
-							if (y1 != height - 1) y1 += 1;
-							else // do not check the next over it doesn't exist...
+							if (tiles.at(x + width * y1).number == tiles.at(x + width * y).number) // same number
+								tiles.at(x + width * y).merge(tiles, tiles.at(x + width * y1), width);
+							else if (tiles.at(x + width * y1).number == 0) // if it is empty
 							{
-								tiles.at(y1 + width * y).number = tiles.at(x + width * y).number;
-								if (y1 != x) tiles.at(x + width * y).number = 0; // this number should be empty if you 
-																				// are moving from there
+								if (y1 != height - 1) y1 += 1;
+								else // do not check the next over it doesn't exist...
+								{
+									tiles.at(y1 + width * y).number = tiles.at(x + width * y).number;
+									if (y1 != x) tiles.at(x + width * y).number = 0; // this number should be empty if you 
+																						// are moving from there
+								}
+							}
+							else // if the tile has a different number
+							{
+								tiles.at(x + width * (y1 - 1)).number = tiles.at(x + width * y).number;
+								if (y1 != y) tiles.at(x + width * y).number = 0; // this number should be empty if you 
+																					 // are moving from there
 							}
 						}
-						else // if the tile has a different number
-						{
-							tiles.at(x + width * (y1 - 1)).number = tiles.at(x + width * y).number;
-							if (y1 != y) tiles.at(x + width * y).number = 0; // this number should be empty if you 
-																			 // are moving from there
-						}
 					}
+					else continue;
 				}
 			}
 		}

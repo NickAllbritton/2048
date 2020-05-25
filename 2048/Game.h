@@ -1,24 +1,6 @@
 #pragma once
 #include "Board.h"
-#include <utility>
 
-class Keyboard // simple class that only all takes one keyboard input at a time
-{
-private:
-	sf::Keyboard::Key key = sf::Keyboard::Key::Unknown; // default to unknown
-public:
-	void keyEvent(sf::Event e)
-	{
-		if (e.type == sf::Event::KeyPressed)
-		{
-			key = e.key.code;
-		}
-	}
-	bool isKeyPressed(sf::Keyboard::Key k)
-	{
-		return key == k;
-	}
-};
 
 class Game
 {
@@ -35,5 +17,4 @@ private:
 	float width;
 	float height;
 	Board board;
-	Keyboard kbd;
 };
