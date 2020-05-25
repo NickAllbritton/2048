@@ -234,8 +234,22 @@ void Board::drawCell(sf::RenderWindow& wnd, Tile& tile)
 		sf::RectangleShape rect(sf::Vector2f(tileLen, tileLen));
 		rect.setPosition(sf::Vector2f(topLeftOfBoard.x + tile.pos.x * (tileLen + 1.f),
 			topLeftOfBoard.y + tile.pos.y * (tileLen + 1.f))); //sets position of tile in screen coordinates
-		rect.setFillColor(sf::Color::Magenta); // change color later
+		rect.setFillColor(sf::Color(130, 130, 80));
+
+		sf::Font oneday;
+		oneday.loadFromFile("ONEDAY.ttf");
+
+		sf::Text number;
+
+		number.setFont(oneday);
+		number.setCharacterSize(tileLen / 2.f);
+		number.setFillColor(sf::Color::White);
+		number.setString(std::to_string(tile.number));
+		number.setPosition(sf::Vector2f(rect.getPosition().x + tileLen / 2.f - number.getLocalBounds().width / 2.f,
+			rect.getPosition().y + tileLen / 2.f - number.getLocalBounds().height / 2.f));
+
 		wnd.draw(rect);
+		wnd.draw(number);
 	}
 }
 
