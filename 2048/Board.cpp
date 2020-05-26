@@ -38,7 +38,7 @@ void Board::draw(sf::RenderWindow& wnd)
 	}
 }
 
-void Board::move(Direction dir)
+void Board::move(Direction dir, std::vector<std::pair<Direction, bool>> canMove)
 {
 
 	switch (dir)
@@ -208,7 +208,31 @@ void Board::move(Direction dir)
 		}
 		break;
 	}
-	spawnTile(dir);
+	if(canMove.at(static_cast<int>(dir)).second) spawnTile(dir); // spawn a tile if the move was valid
+}
+
+bool Board::nextTileAvailable(sf::Vector2i pos, Direction dir)
+{
+	// holds next tile over but value depends on the direction of movment
+	sf::Vector2i nextPos;
+	switch (dir)
+	{
+	case Direction::Left:
+		nextPos = sf::Vector2i(pos.x - 1, pos.y);
+		break;
+	case Direction::Right:
+		nextPos = sf::Vector2i(pos.x + 1, pos.y);
+		break;
+	case Direction::Up:
+		nextPos = sf::Vector2i(pos.x, pos.y - 1);
+		break;
+	case Direction::Down:
+		nextPos = sf::Vector2i(pos.x, pos.y + 1);
+		break;
+	}
+
+	// return whether the next tile over is available to move into if it is on the board
+	return contains(nextPos) && (getTile(nextPos).number == 0 || getTile(pos).number == getTile(nextPos).number);
 }
 
 void Board::drawCell(sf::RenderWindow& wnd, Tile& tile)

@@ -1,6 +1,6 @@
 #pragma once
 #include "Board.h"
-
+#include <utility>
 
 class Game
 {
@@ -13,8 +13,10 @@ public:
 	void update(sf::RenderWindow& wnd); // game logic
 	void draw(sf::RenderWindow& wnd); // drawing
 private:
+	void checkMoves();
 private:
 	float width;
 	float height;
 	Board board;
+	std::vector<std::pair<Direction, bool>> canMove;
 };
