@@ -40,184 +40,169 @@ void Board::draw(sf::RenderWindow& wnd)
 
 void Board::move(Direction dir)
 {
+
 	switch (dir)
 	{
+	// to move left
+	// 1. loop through x's from left to right until you find an occupied cell
+	// 2. loop through all tiles to the left of it until you get to an occupied cell or the wall
+	// 3. if you reach the wall or a different number cell move to the cell to the right. set old cell to empty
+	// 4. if you reach a cell that matches your number merge into it. set old cell to empty
+	// 5. repeat
 	case Direction::Left:
+		// optimization: start from x = 1. tiles at x = 0 can't move further left
+		for (sf::Vector2i pos(1, 0); pos.x < width; pos.x++)
 		{
-			// start from the left and move every tile as far as it can go.
-			// if it is at x = 0 it can't be moved further left. so start at x = 1
-			// CHECK IF TILE IS EMPTY.........
-			// 1. look to tile to the left
-			// 2. if it is not empty, that means it and everything to the left of it is already as far as it can go
-			// 3. if it is empty, go back to one and check tile left of this one..
-			// 4. if its number matches yours merge with it
-			// 5. if its number is different go to or stay at the tile to your right
-			for (int x = 1; x < width; x++)
+			for (pos.y = 0; pos.y < height; pos.y++)
 			{
-				for (int y = 0; y < height; y++)
+				if (getTile(pos).number != 0) // step 1: ignore empty cells
 				{
-					if (getTile(sf::Vector2i(x, y)).number != 0)
+					// step 2: get location of next occupied cell (or wall which is x = -1)
+					sf::Vector2i newPos = nextTile(pos, dir);
+					// step 3: if newPos is left wall
+					if (newPos.x == -1)
 					{
-						int x1 = x - 1;
-						while (x1 >= 0)
-						{
-							if (tiles.at(x1 + width * y).number == tiles.at(x + width * y).number) // same number
-								tiles.at(x + width * y).merge(tiles, tiles.at(x1 + width * y), width);
-							else if (tiles.at(x1 + width * y).number == 0) // if it is empty
-							{
-								if (x1 != 0) x1 -= 1;
-								else // do not check the next over it doesn't exist...
-								{
-									tiles.at(x1 + width * y).number = tiles.at(x + width * y).number;
-									if (x1 != x) tiles.at(x + width * y).number = 0; // this number should be empty if you 
-																					// are moving from there
-									break;
-								}
-							}
-							else // if the tile has a different number
-							{
-								tiles.at((x1 + 1) + width * y).number = tiles.at(x + width * y).number;
-								if (x1 != x) tiles.at(x + width * y).number = 0; // this number should be empty if you 
-																				// are moving from there
-							}
-						}
+						// move tile to tile to the right of newPos
+						newPos.x += 1;
+						moveTile(pos, newPos);
 					}
-					else continue;
+					// step 3: if tile at newPos is a different numbered cell
+					else if (getTile(newPos).number != getTile(pos).number)
+					{
+						// move tile to tile to the right of newPos
+						newPos.x += 1;
+						moveTile(pos, newPos);
+					}
+					// step 4: if tile at newPos has same number
+					else if (getTile(newPos).number == getTile(pos).number)
+					{
+						// merge into it
+						getTile(newPos).merge(tiles, getTile(pos), width);
+					}
+					// repeat for all occupied cells
 				}
 			}
 		}
 		break;
+		// to move right
+		// 1. loop through x's from right to left until you find an occupied cell
+		// 2. loop through all tiles to the right of it until you get to an occupied cell or the wall
+		// 3. if you reach the wall or a different number cell move to the cell to the left. set old cell to empty
+		// 4. if you reach a cell that matches your number merge into it. set old cell to empty
+		// 5. repeat
 	case Direction::Right:
+		// optimization: start from x = width - 2. tiles at x = width - 1 can't move further right
+		for (sf::Vector2i pos(width - 2, 0); pos.x >= 0; pos.x--)
 		{
-			// start from the right and move every tile as far as it can go.
-			// if it is at x = width - 1 it can't be moved further right. so start at x = width - 2
-			// CHECK IF TILE IS EMPTY.........
-			// 1. look to tile to the right
-			// 2. if it is not empty, that means it and everything to the right of it is already as far as it can go
-			// 3. if it is empty, go back to step 1. and check tile to the right of this one..
-			// 4. if its number matches yours merge with it
-			// 5. if its number is different go to or stay at the tile to your left
-			for (int x = width - 2; x >= 0; x--)
+			for (pos.y = 0; pos.y < height; pos.y++)
 			{
-				for (int y = 0; y < height; y++)
+				if (getTile(pos).number != 0) // step 1: ignore empty cells
 				{
-					if (getTile(sf::Vector2i(x, y)).number != 0)
+					// step 2: get location of next occupied cell (or wall which is x = width)
+					sf::Vector2i newPos = nextTile(pos, dir);
+					// step 3: if newPos is right wall
+					if (newPos.x == width)
 					{
-						int x1 = x + 1;
-						while (x1 <= width - 1)
-						{
-							if (tiles.at(x1 + width * y).number == tiles.at(x + width * y).number) // same number
-								tiles.at(x + width * y).merge(tiles, tiles.at(x1 + width * y), width);
-							else if (tiles.at(x1 + width * y).number == 0) // if it is empty
-							{
-								if (x1 != width - 1) x1 += 1;
-								else // do not check the next over it doesn't exist...
-								{
-									tiles.at(x1 + width * y).number = tiles.at(x + width * y).number;
-									if (x1 != x) tiles.at(x + width * y).number = 0; // this number should be empty if you 
-																					// are moving from there
-									break;
-								}
-							}
-							else // if the tile has a different number
-							{
-								tiles.at((x1 - 1) + width * y).number = tiles.at(x + width * y).number;
-								if (x1 != x) tiles.at(x + width * y).number = 0; // this number should be empty if you 
-																				 // are moving from there
-							}
-						}
+						// move tile to tile to the left of newPos
+						newPos.x -= 1;
+						moveTile(pos, newPos);
 					}
-					else continue;
+					// step 3: if tile at newPos is a different numbered cell
+					else if (getTile(newPos).number != getTile(pos).number)
+					{
+						// move tile to tile to the left of newPos
+						newPos.x -= 1;
+						moveTile(pos, newPos);
+					}
+					// step 4: if tile at newPos has same number
+					else if (getTile(newPos).number == getTile(pos).number)
+					{
+						// merge into it
+						getTile(newPos).merge(tiles, getTile(pos), width);
+					}
+					// repeat for all occupied cells
 				}
 			}
 		}
 		break;
+	// to move up
+	// 1. loop through y's from top to bottom until you find an occupied cell
+	// 2. loop through all tiles above it until you get to an occupied cell or the wall
+	// 3. if you reach the wall or a different number cell move to the cell below. set old cell to empty
+	// 4. if you reach a cell that matches your number merge into it. set old cell to empty
+	// 5. repeat
 	case Direction::Up:
+		// optimization: start from y = 1. tiles at y = 0 can't move further up
+		for (sf::Vector2i pos(0, 1); pos.y < height; pos.y++)
 		{
-			// start from the left and move every tile as far as it can go.
-			// if it is at y = 0 it can't be moved further up. so start at y = 1
-			// CHECK IF TILE IS EMPTY.........
-			// 1. look to above tile
-			// 2. if it is not empty, that means it and everything above it is already as far as it can go
-			// 3. if it is empty, go back to one and check tile above this one..
-			// 4. if its number matches yours merge with it
-			// 5. if its number is different go to or stay at the tile below
-			for (int y = 1; y < height; y++)
+			for (pos.x = 0; pos.x < width; pos.x++)
 			{
-				for (int x = 0; x < width; x++)
+				if (getTile(pos).number != 0) // step 1: ignore empty cells
 				{
-					if (getTile(sf::Vector2i(x, y)).number != 0)
+					// step 2: get location of next occupied cell (or wall which is y = -1)
+					sf::Vector2i newPos = nextTile(pos, dir);
+					// step 3: if newPos is top wall
+					if (newPos.y == -1)
 					{
-						int y1 = y - 1;
-						while (y1 >= 0)
-						{
-							if (tiles.at(x + width * y1).number == tiles.at(x + width * y).number) // same number
-								tiles.at(x + width * y).merge(tiles, tiles.at(x + width * y1), width);
-							else if (tiles.at(x + width * y1).number == 0) // if it is empty
-							{
-								if (y1 != 0) y1 -= 1;
-								else // do not check the next over it doesn't exist...
-								{
-									tiles.at(y1 + width * y).number = tiles.at(x + width * y).number;
-									if (y1 != x) tiles.at(x + width * y).number = 0; // this number should be empty if you 
-																					// are moving from there
-									break;
-								}
-							}
-							else // if the tile has a different number
-							{
-								tiles.at(x + width * (y1 + 1)).number = tiles.at(x + width * y).number;
-								if (y1 != y) tiles.at(x + width * y).number = 0; // this number should be empty if you 
-																				// are moving from there
-							}
-						}
+						// move tile to 1 tile below newPos
+						newPos.y += 1;
+						moveTile(pos, newPos);
 					}
-					else continue;
+					// step 3: if tile at newPos is a different numbered cell
+					else if (getTile(newPos).number != getTile(pos).number)
+					{
+						// move tile to tile below newPos
+						newPos.y += 1;
+						moveTile(pos, newPos);
+					}
+					// step 4: if tile at newPos has same number
+					else if (getTile(newPos).number == getTile(pos).number)
+					{
+						// merge into it
+						getTile(newPos).merge(tiles, getTile(pos), width);
+					}
+					// repeat for all occupied cells
 				}
 			}
 		}
 		break;
+	// to move up
+	// 1. loop through y's from bottom to top until you find an occupied cell
+	// 2. loop through all tiles below it until you get to an occupied cell or the wall
+	// 3. if you reach the wall or a different number cell move to the cell above. set old cell to empty
+	// 4. if you reach a cell that matches your number merge into it. set old cell to empty
+	// 5. repeat
 	case Direction::Down:
+		// optimization: start from y = height - 2. tiles at y = height - 1 can't move further down
+		for (sf::Vector2i pos(0, height - 2); pos.y >= 0; pos.y--)
 		{
-			// start from the left and move every tile as far as it can go.
-			// if it is at y = height - 1 it can't be moved further down. so start at y = height - 2
-			// CHECK IF TILE IS EMPTY.........
-			// 1. look to below tile
-			// 2. if it is not empty, that means it and everything above it is already as far as it can go
-			// 3. if it is empty, go back to step 1. and check tile below this one..
-			// 4. if its number matches yours merge with it
-			// 5. if its number is different go to or stay at the tile above
-			for (int y = height - 2; y >= 0; y++)
+			for (pos.x = 0; pos.x < width; pos.x++)
 			{
-				for (int x = 0; x < width; x++)
+				if (getTile(pos).number != 0) // step 1: ignore empty cells
 				{
-					if (getTile(sf::Vector2i(x, y)).number != 0)
+					// step 2: get location of next occupied cell (or wall which is y = height)
+					sf::Vector2i newPos = nextTile(pos, dir);
+					// step 3: if newPos is bottom wall
+					if (newPos.y == height)
 					{
-						int y1 = y + 1;
-						while (y1 <= height - 1)
-						{
-							if (tiles.at(x + width * y1).number == tiles.at(x + width * y).number) // same number
-								tiles.at(x + width * y).merge(tiles, tiles.at(x + width * y1), width);
-							else if (tiles.at(x + width * y1).number == 0) // if it is empty
-							{
-								if (y1 != height - 1) y1 += 1;
-								else // do not check the next over it doesn't exist...
-								{
-									tiles.at(y1 + width * y).number = tiles.at(x + width * y).number;
-									if (y1 != x) tiles.at(x + width * y).number = 0; // this number should be empty if you 
-																						// are moving from there
-									break;
-								}
-							}
-							else // if the tile has a different number
-							{
-								tiles.at(x + width * (y1 - 1)).number = tiles.at(x + width * y).number;
-								if (y1 != y) tiles.at(x + width * y).number = 0; // this number should be empty if you 
-																					 // are moving from there
-							}
-						}
+						// move tile to 1 tile above newPos
+						newPos.y -= 1;
+						moveTile(pos, newPos);
 					}
-					else continue;
+					// step 3: if tile at newPos is a different numbered cell
+					else if (getTile(newPos).number != getTile(pos).number)
+					{
+						// move tile to tile above newPos
+						newPos.y -= 1;
+						moveTile(pos, newPos);
+					}
+					// step 4: if tile at newPos has same number
+					else if (getTile(newPos).number == getTile(pos).number)
+					{
+						// merge into it
+						getTile(newPos).merge(tiles, getTile(pos), width);
+					}
+					// repeat for all occupied cells
 				}
 			}
 		}
@@ -246,7 +231,7 @@ void Board::drawCell(sf::RenderWindow& wnd, Tile& tile)
 		number.setFillColor(sf::Color::White);
 		number.setString(std::to_string(tile.number));
 		number.setPosition(sf::Vector2f(rect.getPosition().x + tileLen / 2.f - number.getLocalBounds().width / 2.f,
-			rect.getPosition().y + tileLen / 2.f - number.getLocalBounds().height / 2.f));
+			rect.getPosition().y + tileLen / 2.f - number.getLocalBounds().height / 1.2f));
 
 		wnd.draw(rect);
 		wnd.draw(number);
@@ -322,4 +307,101 @@ void Board::spawnTile(Direction dir)
 		}
 		break;
 	}
+}
+
+void Board::moveTile(sf::Vector2i pos, sf::Vector2i newPos)
+{
+	// if the tile is not already at newPos
+	if (pos != newPos)
+	{
+		// move the tile at pos to the tile at newPos and set the tile at pos to empty
+		getTile(newPos).number = getTile(pos).number;
+		getTile(pos).number = 0;
+	}
+	// if the tile is already there, do nothing
+}
+
+sf::Vector2i Board::nextTile(sf::Vector2i pos, Direction dir) const
+{
+	sf::Vector2i newPos = pos;
+	switch (dir)
+	{
+	case Direction::Left:
+		// check to the left of the last tile checked starting to the left of pos
+		newPos.x -= 1;
+		while (true)
+		{
+			if (newPos.x < 0) // newPos.x = -1 (next 'tile' is a wall
+			{
+				break;
+			}
+			// check separately because walls arent in Board::tiles
+			else if (tiles.at(newPos.x + width * newPos.y).number != 0)
+			{
+				break;
+			}
+			else newPos.x -= 1; // check further left
+		}
+		// ^^ if newPos is to the left of the first column (if x = -1) or the tile at newPos is occupied
+		// it will break
+		break;
+	case Direction::Right:
+		// check to the right of the last tile checked starting to the right of pos
+		newPos.x += 1;
+		while (true)
+		{
+			if (newPos.x == width) // newPos.x = width (next 'tile' is a wall)
+			{
+				break;
+			}
+			// check separately because walls arent in Board::tiles
+			else if (tiles.at(newPos.x + width * newPos.y).number != 0)
+			{
+				break;
+			}
+			else newPos.x += 1; // check further right
+		}
+		// ^^ if newPos is to the right of the last column (if x = width) or the tile at newPos is occupied
+		// it will break
+		break;
+	case Direction::Up:
+		// check above the last tile checked starting 1 above pos
+		newPos.y -= 1;
+		while (true)
+		{
+			if (newPos.y < 0) // newPos.y = -1 (next 'tile' is a wall)
+			{
+				break;
+			}
+			// check separately because walls arent in Board::tiles
+			else if (tiles.at(newPos.x + width * newPos.y).number != 0)
+			{
+				break;
+			}
+			else newPos.y -= 1; // check further below
+		}
+		// ^^ if newPos is above the first row (if y = -1) or the tile at newPos is occupied
+		// it will break
+		break;
+	case Direction::Down:
+		// check below the last tile checked starting 1 below pos
+		newPos.y += 1;
+		while (true)
+		{
+			if (newPos.y == height) // newPos.y = height (next 'tile' is a wall)
+			{
+				break;
+			}
+			// check separately because walls arent in Board::tiles
+			else if (tiles.at(newPos.x + width * newPos.y).number != 0)
+			{
+				break;
+			}
+			else newPos.y += 1; // check further below
+		}
+		// ^^ if newPos is below the last row (if y = height) or the tile at newPos is occupied
+		// it will break
+		break;
+	}
+	return newPos; // the position of the next tile or wall in direction dir
 }
