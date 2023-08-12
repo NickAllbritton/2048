@@ -1,4 +1,3 @@
-#pragma once
 #include "Board.h"
 #include <utility>
 
