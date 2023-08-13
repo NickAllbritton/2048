@@ -2,7 +2,7 @@
 
 Menu::Menu(sf::Vector2u winSize)
 	:
-	padding(20.f)
+	padding(20.f),highlighted(MenuOption::NewGame)
 {
 	options = {
 		std::string("New game"),
@@ -47,6 +47,15 @@ Menu::Menu(sf::Vector2u winSize)
 
 void Menu::draw(sf::RenderWindow& wnd)
 {
+	// change the look of the highlighted menu option
+	// and change all of the other menu options back to the default
+	for(size_t i = 0; i < optList.size(); i++)
+	{
+		if(i == static_cast<int>(highlighted)) optList.at(i).setFillColor(sf::Color(195, 0, 127));
+		else optList.at(i).setFillColor(sf::Color(18, 188, 148));
+	}
+
+	// draw the menu
 	wnd.draw(title);
 	for(auto& opt : optList)
 	{

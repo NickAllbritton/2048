@@ -47,20 +47,48 @@ void Game::events(sf::RenderWindow& wnd)
 			break;
 		case sf::Event::KeyPressed:
 		{
-			switch (event.key.code)
+			if(!inProgress.first) // if player is in the menu
 			{
-			case sf::Keyboard::Key::Left:
-				board.move(Direction::Left, canMove);
-				break;
-			case sf::Keyboard::Key::Right:
-				board.move(Direction::Right, canMove);
-				break;
-			case sf::Keyboard::Key::Up:
-				board.move(Direction::Up, canMove);
-				break;
-			case sf::Keyboard::Key::Down:
-				board.move(Direction::Down, canMove);
-				break;
+				switch(event.key.code)
+				{
+				case sf::Keyboard::Key::Up:
+					menu.highlighted = (static_cast<int>(menu.highlighted) == 0) 
+								? 
+								MenuOption::NewGame : static_cast<MenuOption>(static_cast<int>(menu.highlighted) - 1);
+					break;
+				case sf::Keyboard::Key::Down:
+					menu.highlighted = (static_cast<int>(menu.highlighted) == 3) 
+								? 
+								MenuOption::Credits : static_cast<MenuOption>(static_cast<int>(menu.highlighted) + 1);
+					break;
+				case sf::Keyboard::Key::Enter:
+					switch(menu.highlighted)
+					{
+					case MenuOption::NewGame:
+						inProgress.first = true;
+						inProgress.second = "new";
+						break;
+					}
+					break;
+				}
+			}
+			else // then player is in a game, so handle game events
+			{
+				switch (event.key.code)
+				{
+				case sf::Keyboard::Key::Left:
+					board.move(Direction::Left, canMove);
+					break;
+				case sf::Keyboard::Key::Right:
+					board.move(Direction::Right, canMove);
+					break;
+				case sf::Keyboard::Key::Up:
+					board.move(Direction::Up, canMove);
+					break;
+				case sf::Keyboard::Key::Down:
+					board.move(Direction::Down, canMove);
+					break;
+				}
 			}
 		}
 		}
