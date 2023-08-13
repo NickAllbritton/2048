@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
+#include <random>
 
 enum class MenuOption
 {
@@ -21,6 +22,7 @@ private:
 	sf::Font oneday;
 	std::vector<std::string> options;
 	std::vector<sf::Text> optList;
+	std::vector<sf::RectangleShape> rects;
 	sf::Text title;
 	float padding;
 };

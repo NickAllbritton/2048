@@ -2,8 +2,45 @@
 
 Menu::Menu(sf::Vector2u winSize)
 	:
-	padding(20.f),highlighted(MenuOption::NewGame)
+	padding(20.f),highlighted(MenuOption::NewGame),rects(25)
 {
+
+	std::random_device dev;
+	std::mt19937 rng(dev());
+	std::uniform_int_distribution<int> width(static_cast<int>(winSize.x*1/8), static_cast<int>(winSize.x*7/8));
+	std::uniform_int_distribution<int> height(static_cast<int>(winSize.y*1/8), static_cast<int>(winSize.y*7/8));
+	std::uniform_int_distribution<int> sideLen(3, static_cast<int>(winSize.x/8));
+	std::uniform_int_distribution<int> shade(52, 100);
+
+	std::vector<sf::Vector2f> pos(50); // positions of all 50  squares
+	std::vector<float> size(50); // side length of all 50 squares
+	for(size_t i = 0; i < rects.size(); i++)
+	{
+		size.at(i) = static_cast<float>(sideLen(rng)); // random side length for each square
+		pos.at(i) = sf::Vector2f(static_cast<float>(width(rng)), static_cast<float>(height(rng))); // random position within the window for each sqr
+		do
+		{
+			for(size_t j = 0; j < i; j++)
+			{
+				// detect a collision
+				if(((pos.at(i).x < pos.at(j).x + size.at(j)) && (pos.at(i).x > pos.at(j).x))
+				|| ((pos.at(i).x + size.at(i) > pos.at(j).x) && (pos.at(i).x + size.at(i) < pos.at(j).x + size.at(j)))
+				|| ((pos.at(i).y < pos.at(j).y + size.at(j)) && (pos.at(i).y > pos.at(j).y))
+				|| ((pos.at(i).y + size.at(i) > pos.at(j).y) && (pos.at(i).y + size.at(i) < pos.at(j).y + size.at(j))))
+				{
+					size.at(i) = static_cast<float>(sideLen(rng)); // assign new size
+					pos.at(i) = sf::Vector2f(static_cast<float>(width(rng)), static_cast<float>(height(rng))); // new position
+					j = 0; // restart loop
+				}
+			}
+			break; // if this line is reached square at i does not collide with any other square so break from the do while loop
+		} while(true);
+		rects.at(i) = sf::RectangleShape(sf::Vector2f(static_cast<float>(size.at(i)), static_cast<float>(size.at(i))));
+		int randShade = shade(rng);
+		rects.at(i).setPosition(pos.at(i));
+		rects.at(i).setFillColor(sf::Color(randShade, randShade, randShade)); // random shade of gray
+	}
+
 	options = {
 		std::string("New game"),
 		std::string("Load game"),
@@ -53,6 +90,12 @@ void Menu::draw(sf::RenderWindow& wnd)
 	{
 		if(i == static_cast<int>(highlighted)) optList.at(i).setFillColor(sf::Color(195, 0, 127));
 		else optList.at(i).setFillColor(sf::Color(18, 188, 148));
+	}
+
+	// draw the decorative squares
+	for(auto& square : rects)
+	{
+		wnd.draw(square);
 	}
 
 	// draw the menu
