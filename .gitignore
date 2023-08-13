@@ -1,4 +1,5 @@
 # first version of gitignore after port from visual studio
 # compile script and executable
-compile.sh
-twnty48
+src/compile.sh
+bin/twnty48
+error_log.txt

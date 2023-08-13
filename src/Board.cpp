@@ -246,7 +246,7 @@ void Board::drawCell(sf::RenderWindow& wnd, Tile& tile)
 		rect.setFillColor(sf::Color(130, 130, 80));
 
 		sf::Font oneday;
-		oneday.loadFromFile("ONEDAY.ttf");
+		oneday.loadFromFile("../resources/ONEDAY.ttf");
 
 		sf::Text number;
 
