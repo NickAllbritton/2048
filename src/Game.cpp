@@ -4,8 +4,10 @@ Game::Game(float width, float height)
 	:
 	width(width), height(height),
 	board(4,4, width, height),
-	canMove(4)
+	inProgress(false, ""), canMove(4)
 {
+	// canMove is initialized by size but all of the elements are empty
+	// below it is initialized as true for every direction
 	for (size_t i = 0; i < canMove.size(); i++)
 	{
 		canMove.at(i).first = static_cast<Direction>(i);
@@ -18,9 +20,16 @@ void Game::run(sf::RenderWindow& wnd)
 	// handle events
 	events(wnd);
 
-	wnd.clear(sf::Color(230, 230, 225));
-	update(wnd); // game logic
-	draw(wnd); // draw
+	wnd.clear(sf::Color(32, 27, 32));
+
+	// Select what scene to draw
+
+	// if a game is in progress draw the board
+	if(inProgress.first) draw(wnd);
+	// otherwise draw the menu
+	else menu.draw(wnd);
+
+	update(wnd); // game (or menu) logic
 	wnd.display();
 }
 
@@ -77,7 +86,7 @@ void Game::checkMoves()
 	// movement is assumed false unless there is a valid move
 	for (sf::Vector2i pos(0, 0); pos.x < board.getWidth(); pos.x++)
 	{
-		for (pos.y = 0; pos.y < board.getHeight(); pos.y++)
+		for (; pos.y < board.getHeight(); pos.y++)
 		{
 			// if any (occupied!) tiles are available to move in any given direction
 			// that direction is a possible move

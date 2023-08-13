@@ -4,9 +4,9 @@
 class Menu
 {
 public:
-	Menu(sf::RenderWindow& wnd);
+	Menu() = default;
 	~Menu() = default;
-
+	void draw(sf::RenderWindow& wnd);
 private:
 	// vector of menu options
 	std::vector<std::string> options;
