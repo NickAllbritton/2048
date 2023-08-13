@@ -5,7 +5,7 @@
 class Game
 {
 public:
-	Game(float w, float h);
+	Game(float w, float h, sf::RenderWindow& wnd);
 	Game() = delete;
 	~Game() = default;
 	void run(sf::RenderWindow& wnd);

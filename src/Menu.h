@@ -4,11 +4,13 @@
 class Menu
 {
 public:
-	Menu() = default;
+	Menu(sf::Vector2u winSize);
 	~Menu() = default;
 	void draw(sf::RenderWindow& wnd);
 private:
-	// vector of menu options
+	sf::Font oneday;
 	std::vector<std::string> options;
-	bool startGame = false;
+	std::vector<sf::Text> optList;
+	sf::Text title;
+	float padding;
 };

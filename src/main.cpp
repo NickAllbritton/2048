@@ -5,7 +5,7 @@ int main()
 {
 	sf::RenderWindow window(sf::VideoMode(800, 600), "2048");
 	window.setKeyRepeatEnabled(false); // only one key event per key press
-	Game game(window.getSize().x, window.getSize().y);
+	Game game(window.getSize().x, window.getSize().y, window);
 	// program and game loop
 	while (window.isOpen()) game.run(window);
 

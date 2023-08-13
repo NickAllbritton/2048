@@ -1,9 +1,10 @@
 #include "Game.h"
 
-Game::Game(float width, float height) 
+Game::Game(float width, float height, sf::RenderWindow& wnd) 
 	:
 	width(width), height(height),
-	board(4,4, width, height),
+	board(4,4, width, height), 
+	menu(wnd.getSize()),
 	inProgress(false, ""), canMove(4)
 {
 	// canMove is initialized by size but all of the elements are empty
@@ -35,6 +36,7 @@ void Game::run(sf::RenderWindow& wnd)
 
 void Game::events(sf::RenderWindow& wnd)
 {
+	// TODO: handle resize event by updating width and height
 	sf::Event event;
 	while (wnd.pollEvent(event))
 	{
@@ -44,7 +46,7 @@ void Game::events(sf::RenderWindow& wnd)
 			wnd.close();
 			break;
 		case sf::Event::KeyPressed:
-			{
+		{
 			switch (event.key.code)
 			{
 			case sf::Keyboard::Key::Left:
@@ -60,7 +62,7 @@ void Game::events(sf::RenderWindow& wnd)
 				board.move(Direction::Down, canMove);
 				break;
 			}
-			}
+		}
 		}
 	}
 }
