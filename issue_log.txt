@@ -1,0 +1,100 @@
+*------------------------------------------------------------------------------------------------*
+*              TODO list and bugs in order of discover (not importance)                          *
+*              Issues moved to resolved_log.txt once fixed.                                      *
+*------------------------------------------------------------------------------------------------*
+
+Issue #1 (8-15-23) Type: bug
+When the entire first column is filled and cannot collapse, moving the second column up and down
+does not spawn a new tile ever. No investigation done so far to find the source of the error. This
+seems to also be the case when in a left move is made and the first column is all filled though
+that is not thoroughly tested. I do not remember the logic of how the tile generation after a move
+works, so it may need a complete rewrite.
+
+--------------------------------------------------------------------------------------------------
+
+Issue #2 (8-15-23) Type: in development
+The load game menu button does nothing. This is because though the program is structured to allow
+a game to be started from a previous saved game by passing the name in the board constructor, the
+logic has not been written in the following places:
+
+i) To load a game, the event loop's menu section has a spot to handle when the load game menu 
+option is selected. This should draw over the menu (as a first simple solution) with a 
+"Load Game" prompt and a list of saved games and it should set a flag to change the event handler
+code to work with the load menu navigation instead. Once a game is selected, enter that game
+by calling startGame(name) and clear the flag.
+Done? No
+
+ii) In the Board class, spawnInitialTiles(int) has a section dedicated to loading a saved game's 
+state. This should read from a file and simply populate the correct tiles.
+Done? No
+
+iii) For a game to be loaded, there must be a saved game. In the gameplay section of the event loop,
+the case for the s key should open a simple overlay menu to save the current game state.
+Done? No
+
+iv) In the Board class, there needs to be a method to save the state of the game. This should write
+to a file in ../resources/ (relative to bin/) containing the saved games' states.
+Done? No
+
+--------------------------------------------------------------------------------------------------
+
+Issue #3 (8-15-23) Type: in development
+The credits and high scores menu options do nothing. 
+i) The credits should scroll the credits by at a reasonable pace as a nice effect and exit to the 
+menu when done. 
+Done? No
+
+The high scores option needs to list all the scores of the saved games and previous saved games 
+with an option by each to see the final board or to delete the entry. Should incomplete games be 
+included in this list? Not sure
+Done? No
+
+--------------------------------------------------------------------------------------------------
+
+Issue #4 (8-15-23) Type: in development
+The colors of the tiles are from an old version. I have a new color scheme and want to use that
+instead. Each tile should have a color based on its number which is some form of pink. The
+larger the number the brighter with rgb ratio matching that of the menu.highlighted menu option.
+The background of the board should be changed, as well. Still grey, and probably still the same
+rgb ratio as the background but brighter or darker....
+Choose a starting color as the minimum brightness and decide how much each color should be
+increased by each higher number to keep the ratio approximately the same. All tile numbers are
+powers of two so take log2(num)*increase for r, g, and b as long as all three are below 255. This
+should be an elegant solution unless there is something I didn't think about which there alway
+is.....
+
+--------------------------------------------------------------------------------------------------
+
+Issue #5 (8-15-23) Type: bug
+When a tile's number reaches 4 digits, it no longer fits in the square. This is because to choose
+the text size, I am calculating based on the height of the text and not the length. It would make 
+sense to calculate the ratio of the length of the number to tileLen and then find a way to adjust
+the font size to meet that ideal ratio for each number of digits. This could be simple or
+complicated and I won't know until I start working on it.
+
+--------------------------------------------------------------------------------------------------
+
+Issue #6 (8-15-23) Type: in development
+There needs to be a side bar on the left displaying functions like "exit to menu" or "save game"
+and there needs to be a score. The high scores can be displayed (without interaction) on the right
+and maybe toggled? Contain these in the board class as a part of drawing but NOT AS DATA. It
+should be for visual purposes only. Of course, future me, feel free to disagree.... but you're
+probably wrong.
+
+--------------------------------------------------------------------------------------------------
+
+Issue #7 (8-15-23) Type: in development
+Draw a grid of the color scheme's turquoise color over the board with a thick outline. Cells may
+need padding. The board will definitely need a border but that should not be important for any
+size calculations.
+
+--------------------------------------------------------------------------------------------------
+
+Issue #8 (8-15-23) Type: bug
+Some calculations are properly handled as ratios of the window size, BUT window resizes are not
+handled in events(). Additionally, some drawing may not be properly placed, but that will be
+discovered once window resizing is handled. This should easily be fixed by replacing the wnd
+dimensions stored in game, though this part of the code was not yet thought out carefully (it is
+probably messy).
+
+
