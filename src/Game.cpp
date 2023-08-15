@@ -3,7 +3,6 @@
 Game::Game(float width, float height, sf::RenderWindow& wnd) 
 	:
 	width(width), height(height),
-	board(4,4, width, height), 
 	menu(wnd.getSize()),
 	inProgress(false, ""), canMove(4)
 {
@@ -65,8 +64,11 @@ void Game::events(sf::RenderWindow& wnd)
 					switch(menu.highlighted)
 					{
 					case MenuOption::NewGame:
-						inProgress.first = true;
-						inProgress.second = "new";
+						startGame("new");
+						break;
+					case MenuOption::LoadGame:
+						// enter a load game menu
+						// TODO: create a load game menu
 						break;
 					}
 					break;
@@ -87,6 +89,10 @@ void Game::events(sf::RenderWindow& wnd)
 					break;
 				case sf::Keyboard::Key::Down:
 					board.move(Direction::Down, canMove);
+					break;
+				// functions
+				case sf::Keyboard::Key::S:
+					// save current game
 					break;
 				}
 			}
@@ -141,4 +147,11 @@ void Game::checkMoves()
 			}
 		}
 	}
+}
+
+void Game::startGame(char* name)
+{
+	inProgress.first = true;
+	inProgress.second = name;
+	board = Board(4, 4, width, height, inProgress.second); // load the board
 }

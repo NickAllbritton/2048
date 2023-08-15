@@ -1,8 +1,8 @@
 #include "Board.h"
 
-Board::Board(int x, int y, float width, float height) 
+Board::Board(int x, int y, float width, float height, std::string name) 
 	: 
-	width(x), height(y), tiles(x*y), newTileProb(0.f, 1.f),
+	width(x), height(y), tiles(x*y), newTileProb(0.f, 1.f), name(name),
 	backgroundRect(sf::Vector2f((tileLen + 1.f) * static_cast<float>(x) - 1.f,
 	((tileLen + 1.f)* static_cast<float>(y) - 1.f))) // rectangle with x*y tiles with 1 pixel spacing between each cell
 {
@@ -264,18 +264,25 @@ void Board::drawCell(sf::RenderWindow& wnd, Tile& tile)
 
 void Board::spawnInitialTiles(int c)
 {
-	std::random_device dev;
-	std::mt19937 rng(dev());
-	std::uniform_int_distribution<int> tileLoc(0, 3);
-	for (int i = 0; i < c; i++)
+	if(name == "new")
 	{
-		sf::Vector2i pos;
-		do // set pos = to a random cell
+		std::random_device dev;
+		std::mt19937 rng(dev());
+		std::uniform_int_distribution<int> tileLoc(0, 3);
+		for (int i = 0; i < c; i++)
 		{
-			pos = sf::Vector2i(tileLoc(rng), tileLoc(rng));
-		} while (tiles.at(pos.x + pos.y * width).number != 0); // if the tile is occupied do it again
-		int tileValue = newTileProb(rng) < .9f ? 2 : 4; // tileValue has a 90% chance of being a 2
-		tiles.at(pos.x + width * pos.y) = Tile(pos, tileValue); // set the tile at pos to a new tile with tileValue
+			sf::Vector2i pos;
+			do // set pos = to a random cell
+			{
+				pos = sf::Vector2i(tileLoc(rng), tileLoc(rng));
+			} while (tiles.at(pos.x + pos.y * width).number != 0); // if the tile is occupied do it again
+			int tileValue = newTileProb(rng) < .9f ? 2 : 4; // tileValue has a 90% chance of being a 2
+			tiles.at(pos.x + width * pos.y) = Tile(pos, tileValue); // set the tile at pos to a new tile with tileValue
+		}
+	}
+	else // then load the saved game
+	{
+
 	}
 }
 

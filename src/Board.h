@@ -12,7 +12,10 @@ enum class Direction
 class Board
 {
 public:
-	Board(int x, int y, float width, float height);
+	// default constructor must be available so that the board is not created until
+	// after you have exited the menu
+	Board() = default;
+	Board(int x, int y, float width, float height, std::string name);
 	~Board() = default;
 	Tile& getTile(sf::Vector2i pos);
 	int getWidth() const
@@ -41,6 +44,7 @@ private:
 	static constexpr float tileLen = 115.f;
 	int width;
 	int height;
+	std::string name;
 	sf::RectangleShape backgroundRect;
 	std::vector<Tile> tiles;
 	std::uniform_real_distribution<float> newTileProb;
