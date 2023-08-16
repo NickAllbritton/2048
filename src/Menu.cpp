@@ -1,9 +1,17 @@
 #include "Menu.h"
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/xml_parser.hpp>
+
+namespace pt = boost::property_tree;
 
 Menu::Menu(sf::Vector2u winSize)
 	:
 	padding(20.f),highlighted(MenuOption::NewGame),rects(25)
 {
+
+	font.loadFromFile("../resources/ONEDAY.ttf");
+
+	// draw the decorative squares
 
 	std::random_device dev;
 	std::mt19937 rng(dev());
@@ -41,6 +49,8 @@ Menu::Menu(sf::Vector2u winSize)
 		rects.at(i).setFillColor(sf::Color(randShade, randShade, randShade)); // random shade of gray
 	}
 
+	// menu options
+
 	options = {
 		std::string("New game"),
 		std::string("Load game"),
@@ -50,10 +60,7 @@ Menu::Menu(sf::Vector2u winSize)
 	
 
 	// Start drawing the menu
-	oneday.loadFromFile("../resources/ONEDAY.ttf");
-
-
-	title.setFont(oneday);
+	title.setFont(font);
 	title.setCharacterSize(120.f);
 	title.setFillColor(sf::Color(18, 188, 148));
 	title.setString("2048");
@@ -69,7 +76,7 @@ Menu::Menu(sf::Vector2u winSize)
 	// menu options settings
 	for(size_t i = 0; i < options.size(); i++)
 	{
-		optList.at(i).setFont(oneday);
+		optList.at(i).setFont(font);
 		optList.at(i).setCharacterSize(50.f);
 		optList.at(i).setFillColor(sf::Color(18, 188, 148));
 		optList.at(i).setString(options.at(i)); // menu option string
@@ -78,6 +85,33 @@ Menu::Menu(sf::Vector2u winSize)
 		// from that add option text's height times i which accounts for the height of all option texts printed above it
 		optList.at(i).setPosition(sf::Vector2f(title.getPosition().x, 
 					 title.getPosition().y + title.getLocalBounds().height + padding*(i+3) + optList.at(i).getLocalBounds().height*i));
+	}
+	
+	savedGames = readSavedGames("../resources/saved_games.xml");
+
+	// load game menu
+	loadMenu.inThisMenu = false;
+
+	loadMenu.title.setString("Load Game");
+	loadMenu.title.setFont(font);
+	loadMenu.title.setCharacterSize(60.f);
+	loadMenu.title.setFillColor(sf::Color(18, 188, 148));
+	loadMenu.title.setPosition(sf::Vector2f(winSize.x / 2.f - loadMenu.title.getLocalBounds().width / 2, 40.f));
+	loadMenu.options = std::vector<sf::Text>(savedGames.size()); // create enough options for each saved game
+	int i = 0;
+	for(auto& game : savedGames)
+	{
+		// set all the text objects' strings for each saved game
+		loadMenu.options.at(i).setString(game.name + std::string("  --  ") + game.player
+					+ std::string("  (") + std::to_string(game.score) + std::string(")"));
+		// set the initial color of each object and the font size
+		loadMenu.options.at(i).setFont(font);
+		loadMenu.options.at(i).setCharacterSize(30.f);
+		loadMenu.options.at(i).setFillColor(sf::Color(18, 188, 148));
+		loadMenu.options.at(i).setPosition(sf::Vector2f(loadMenu.title.getPosition().x, 
+				loadMenu.title.getPosition().y + loadMenu.title.getLocalBounds().height + 
+				loadMenu.options.at(i).getLocalBounds().height*i + (i+2)*20.f));
+		i++;
 	}
 }
 
@@ -104,4 +138,48 @@ void Menu::draw(sf::RenderWindow& wnd)
 	{
 		wnd.draw(opt);
 	}
+}
+
+void Menu::drawLoadGame(sf::RenderWindow& wnd)
+{
+	// set the color of the options correctly pink if highlighted
+	for(size_t i = 0; i < loadMenu.options.size(); i++)
+	{
+		if(i == loadMenu.highlighted) loadMenu.options.at(i).setFillColor(sf::Color(195, 0, 127));
+		else loadMenu.options.at(i).setFillColor(sf::Color(18, 188, 148));
+	}
+
+	for(auto& opt : loadMenu.options)
+	{
+		wnd.draw(opt);
+	}
+
+	wnd.draw(loadMenu.title);
+}
+
+std::vector<SavedGame> Menu::readSavedGames(std::string file)
+{
+	// parse the xml file "file" and store the saved game data in a vector of Menu::SavedGame objects
+	std::vector<SavedGame> SavedGames;
+	
+	pt::ptree saved_gameXML;
+	pt::read_xml(file, saved_gameXML);
+
+	// get all the children of the root node <Games>
+	for(auto& game : saved_gameXML.get_child("Games"))
+	{
+		SavedGame loadedGame;
+		loadedGame.name = game.second.get<std::string>("name");
+		loadedGame.player = game.second.get<std::string>("player");
+		loadedGame.score = game.second.get<int>("score");
+		// lastly load the tiles of the the saved game
+		std::vector<int> tiles;
+		for(auto& tile : game.second.get_child("tiles"))
+		{
+			tiles.push_back(std::stoi(tile.second.data()));
+		}
+		SavedGames.push_back(loadedGame);
+	}
+
+	return SavedGames;
 }

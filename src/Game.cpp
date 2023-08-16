@@ -26,6 +26,8 @@ void Game::run(sf::RenderWindow& wnd)
 
 	// if a game is in progress draw the board
 	if(inProgress.first) draw(wnd);
+	// if in load game menu, draw the load game menu (shocker)
+	else if(menu.loadMenu.inThisMenu) menu.drawLoadGame(wnd);
 	// otherwise draw the menu
 	else menu.draw(wnd);
 
@@ -46,17 +48,17 @@ void Game::events(sf::RenderWindow& wnd)
 			break;
 		case sf::Event::KeyPressed:
 		{
-			if(!inProgress.first) // if player is in the menu
+			if(!inProgress.first && !menu.loadMenu.inThisMenu) // if player is in the menu and not in the load game menu
 			{
 				switch(event.key.code)
 				{
 				case sf::Keyboard::Key::Up:
-					menu.highlighted = (static_cast<int>(menu.highlighted) == 0) 
+					menu.highlighted = (static_cast<int>(menu.highlighted) == 0) // if highlighted option is the top of the menu
 								? 
 								MenuOption::NewGame : static_cast<MenuOption>(static_cast<int>(menu.highlighted) - 1);
 					break;
 				case sf::Keyboard::Key::Down:
-					menu.highlighted = (static_cast<int>(menu.highlighted) == 3) 
+					menu.highlighted = (static_cast<int>(menu.highlighted) == 3) // if highlighted option is the bottom of the menu
 								? 
 								MenuOption::Credits : static_cast<MenuOption>(static_cast<int>(menu.highlighted) + 1);
 					break;
@@ -67,10 +69,27 @@ void Game::events(sf::RenderWindow& wnd)
 						startGame("new");
 						break;
 					case MenuOption::LoadGame:
-						// enter a load game menu
-						// TODO: create a load game menu
+						menu.loadMenu.inThisMenu = true; // enter the load game menu
+						menu.loadMenu.highlighted = 0; // highlight the top entry
 						break;
 					}
+					break;
+				}
+			}
+			else if(!inProgress.first && menu.loadMenu.inThisMenu) // if player is in the load game menu
+			{
+				switch(event.key.code)
+				{
+				case sf::Keyboard::Key::Up:
+					// move up the menu unless at the top
+					menu.loadMenu.highlighted = (menu.loadMenu.highlighted == 0) ? 0 : menu.loadMenu.highlighted - 1;
+					break;
+				case sf::Keyboard::Key::Down:
+					// move down the menu unless at the bottom
+					menu.loadMenu.highlighted = (menu.loadMenu.highlighted == menu.loadMenu.options.size() - 1) ? menu.loadMenu.highlighted : menu.loadMenu.highlighted + 1;
+					break;
+				case sf::Keyboard::Key::Enter:
+					startGame(menu.savedGames.at(menu.loadMenu.highlighted).name); // load the selected game
 					break;
 				}
 			}
@@ -149,7 +168,7 @@ void Game::checkMoves()
 	}
 }
 
-void Game::startGame(char* name)
+void Game::startGame(std::string name)
 {
 	inProgress.first = true;
 	inProgress.second = name;

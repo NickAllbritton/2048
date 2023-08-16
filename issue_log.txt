@@ -22,7 +22,7 @@ option is selected. This should draw over the menu (as a first simple solution) 
 "Load Game" prompt and a list of saved games and it should set a flag to change the event handler
 code to work with the load menu navigation instead. Once a game is selected, enter that game
 by calling startGame(name) and clear the flag.
-Done? No
+Done? Yes!
 
 ii) In the Board class, spawnInitialTiles(int) has a section dedicated to loading a saved game's 
 state. This should read from a file and simply populate the correct tiles.

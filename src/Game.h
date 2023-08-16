@@ -14,7 +14,7 @@ private:
 	void update(sf::RenderWindow& wnd); // game logic
 	void draw(sf::RenderWindow& wnd); // drawing
 	void checkMoves();
-	void startGame(char* name); // -_-
+	void startGame(std::string name); // -_-
 private:
 	float width;
 	float height;

@@ -1,0 +1,83 @@
+<Games>
+	<Game>
+		<name>Test</name>
+		<player>Nickkkkk</player>
+		<score>584</score>
+		<tiles>
+			<? First row ?>
+			<tile>256</tile>
+			<tile>8</tile>
+			<tile>0</tile>
+			<tile>0</tile>
+			<? Second row ?>
+			<tile>16</tile>
+			<tile>0</tile>
+			<tile>2</tile>
+			<tile>0</tile>
+			<? Third row ?>
+			<tile>32</tile>
+			<tile>8</tile>
+			<tile>0</tile>
+			<tile>0</tile>
+			<? Fourth row ?>
+			<tile>256</tile>
+			<tile>8</tile>
+			<tile>0</tile>
+			<tile>0</tile>
+		</tiles>
+	</Game>
+	<Game>
+		<name>Test2</name>
+		<player>Nick's enemy</player>
+		<score>584</score>
+		<tiles>
+			<? First row ?>
+			<tile>256</tile>
+			<tile>8</tile>
+			<tile>0</tile>
+			<tile>0</tile>
+			<? Second row ?>
+			<tile>16</tile>
+			<tile>0</tile>
+			<tile>2</tile>
+			<tile>0</tile>
+			<? Third row ?>
+			<tile>32</tile>
+			<tile>8</tile>
+			<tile>0</tile>
+			<tile>0</tile>
+			<? Fourth row ?>
+			<tile>256</tile>
+			<tile>8</tile>
+			<tile>0</tile>
+			<tile>0</tile>
+		</tiles>
+	</Game>
+	<Game>
+		<name>Test3</name>
+		<player>Third Wheel</player>
+		<score>584</score>
+		<tiles>
+			<? First row ?>
+			<tile>256</tile>
+			<tile>8</tile>
+			<tile>0</tile>
+			<tile>0</tile>
+			<? Second row ?>
+			<tile>16</tile>
+			<tile>0</tile>
+			<tile>2</tile>
+			<tile>0</tile>
+			<? Third row ?>
+			<tile>32</tile>
+			<tile>8</tile>
+			<tile>0</tile>
+			<tile>0</tile>
+			<? Fourth row ?>
+			<tile>256</tile>
+			<tile>8</tile>
+			<tile>0</tile>
+			<tile>0</tile>
+		</tiles>
+	</Game>
+</Games>
