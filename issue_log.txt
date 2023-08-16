@@ -51,20 +51,6 @@ Done? No
 
 --------------------------------------------------------------------------------------------------
 
-Issue #4 (8-15-23) Type: in development
-The colors of the tiles are from an old version. I have a new color scheme and want to use that
-instead. Each tile should have a color based on its number which is some form of pink. The
-larger the number the brighter with rgb ratio matching that of the menu.highlighted menu option.
-The background of the board should be changed, as well. Still grey, and probably still the same
-rgb ratio as the background but brighter or darker....
-Choose a starting color as the minimum brightness and decide how much each color should be
-increased by each higher number to keep the ratio approximately the same. All tile numbers are
-powers of two so take log2(num)*increase for r, g, and b as long as all three are below 255. This
-should be an elegant solution unless there is something I didn't think about which there alway
-is.....
-
---------------------------------------------------------------------------------------------------
-
 Issue #5 (8-15-23) Type: bug
 When a tile's number reaches 4 digits, it no longer fits in the square. This is because to choose
 the text size, I am calculating based on the height of the text and not the length. It would make 

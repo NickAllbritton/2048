@@ -245,7 +245,19 @@ void Board::drawCell(sf::RenderWindow& wnd, Tile& tile)
 		sf::RectangleShape rect(sf::Vector2f(tileLen, tileLen));
 		rect.setPosition(sf::Vector2f(topLeftOfBoard.x + tile.pos.x * (tileLen + 1.f),
 			topLeftOfBoard.y + tile.pos.y * (tileLen + 1.f))); //sets position of tile in screen coordinates
-		rect.setFillColor(sf::Color(130, 130, 80));
+
+		float incB = 25.f; // how much to increase blue
+		float incR = incB * (195.f / 127.f); // how much to increase red ( from algebra dR = R/B * dB )
+		int min_red = 50; // the amount of red that 2-tiles have
+		int min_blue = 33; // the amount of blue that 2-tiles contain
+		int r = min_red + int(incR * (std::log2(tile.number) - 1)); // increase brightness for higher numbered tiles
+		int b = min_blue + int(incB * (std::log2(tile.number) - 1)); // increase brightness for higher numbered tiles
+		if(r >= 255) // keep red within range
+		{
+			r = 255;
+			b = 166;
+		}
+		rect.setFillColor(sf::Color(r, 0, b));
 
 		sf::Font oneday;
 		oneday.loadFromFile("../resources/ONEDAY.ttf");
