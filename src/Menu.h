@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include <random>
+#include "SavedGame.h"
 
 enum class MenuOption
 {
@@ -11,13 +12,6 @@ enum class MenuOption
 	Credits
 };
 
-struct SavedGame
-{
-	std::string name;
-	std::string player;
-	int score;
-	std::vector<int> tiles;
-};
 
 struct LoadGame
 {
@@ -35,7 +29,6 @@ public:
 	Menu(sf::Vector2u winSize);
 	~Menu() = default;
 	void draw(sf::RenderWindow& wnd);
-	std::vector<SavedGame> readSavedGames(std::string file);
 	void drawLoadGame(sf::RenderWindow& wnd);
 public:
 	MenuOption highlighted;

@@ -36,7 +36,7 @@ public:
 	}
 private:
 	void drawCell(sf::RenderWindow& wnd, Tile& tile);
-	void spawnInitialTiles(int c);
+	void spawnInitialTiles();
 	void spawnTile(Direction dir);
 	void moveTile(sf::Vector2i pos, sf::Vector2i newPos);
 	sf::Vector2i nextTile(sf::Vector2i pos, Direction dir) const;

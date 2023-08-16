@@ -1,4 +1,6 @@
 #include "Board.h"
+#include "SavedGame.h"
+#include <iostream>
 
 Board::Board(int x, int y, float width, float height, std::string name) 
 	: 
@@ -18,8 +20,8 @@ Board::Board(int x, int y, float width, float height, std::string name)
 			tiles.at(x + this->width * y).pos = sf::Vector2i(x, y);
 		}
 	}
-	// create a few numbered tiles
-	spawnInitialTiles(3);
+	// populate the board for a new game or load the game "name"
+	spawnInitialTiles();
 }
 
 Tile& Board::getTile(sf::Vector2i pos)
@@ -262,14 +264,15 @@ void Board::drawCell(sf::RenderWindow& wnd, Tile& tile)
 	}
 }
 
-void Board::spawnInitialTiles(int c)
+void Board::spawnInitialTiles()
 {
 	if(name == "new")
 	{
+		int numInitialTiles = 3;
 		std::random_device dev;
 		std::mt19937 rng(dev());
 		std::uniform_int_distribution<int> tileLoc(0, 3);
-		for (int i = 0; i < c; i++)
+		for (int i = 0; i < numInitialTiles; i++)
 		{
 			sf::Vector2i pos;
 			do // set pos = to a random cell
@@ -282,7 +285,28 @@ void Board::spawnInitialTiles(int c)
 	}
 	else // then load the saved game
 	{
+		for(auto& game : readSavedGames("../resources/saved_games.xml"))
+		{
+			if(name == game.name) 
+			{
+				std::vector<int> tiles;
+				tiles = game.tiles; // store the tile numbers of the game being loaded
+				for(int i = 0; i < tiles.size(); i++)
+				{
 
+
+					// x + wy = i 
+					// x = i - wy
+					// so ...
+					int x = i % width;
+					// once we've found x, we can solve directly for y
+					int y = static_cast<int>((i - x)/width);
+					sf::Vector2i pos(x, y);
+					this->tiles.at(i) = Tile(pos, tiles.at(i)); // this->tiles not to be confused with tiles :D
+				}
+				break;
+			}
+		}
 	}
 }
 

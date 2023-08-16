@@ -89,6 +89,7 @@ void Game::events(sf::RenderWindow& wnd)
 					menu.loadMenu.highlighted = (menu.loadMenu.highlighted == menu.loadMenu.options.size() - 1) ? menu.loadMenu.highlighted : menu.loadMenu.highlighted + 1;
 					break;
 				case sf::Keyboard::Key::Enter:
+					menu.loadMenu.inThisMenu = false; // preparing to exit the load game menu
 					startGame(menu.savedGames.at(menu.loadMenu.highlighted).name); // load the selected game
 					break;
 				}

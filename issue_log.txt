@@ -26,7 +26,7 @@ Done? Yes!
 
 ii) In the Board class, spawnInitialTiles(int) has a section dedicated to loading a saved game's 
 state. This should read from a file and simply populate the correct tiles.
-Done? No
+Done? Yes!
 
 iii) For a game to be loaded, there must be a saved game. In the gameplay section of the event loop,
 the case for the s key should open a simple overlay menu to save the current game state.
