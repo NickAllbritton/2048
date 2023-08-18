@@ -2,7 +2,7 @@
 
 Menu::Menu(sf::Vector2u winSize)
 	:
-	padding(20.f),highlighted(MenuOption::NewGame),rects(25)
+	padding(40.f),highlighted(MenuOption::NewGame),rects(25)
 {
 
 	font.loadFromFile("../resources/ONEDAY.ttf");
@@ -57,7 +57,7 @@ Menu::Menu(sf::Vector2u winSize)
 
 	// Start drawing the menu
 	title.setFont(font);
-	title.setCharacterSize(120.f);
+	title.setCharacterSize(240.f);
 	title.setFillColor(sf::Color(18, 188, 148));
 	title.setString("2048");
 	// for the x:
@@ -73,7 +73,7 @@ Menu::Menu(sf::Vector2u winSize)
 	for(size_t i = 0; i < options.size(); i++)
 	{
 		optList.at(i).setFont(font);
-		optList.at(i).setCharacterSize(50.f);
+		optList.at(i).setCharacterSize(100.f);
 		optList.at(i).setFillColor(sf::Color(18, 188, 148));
 		optList.at(i).setString(options.at(i)); // menu option string
 		// text is aligned with the left side of the title text

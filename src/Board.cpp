@@ -1,6 +1,5 @@
 #include "Board.h"
 #include "SavedGame.h"
-#include <iostream>
 
 Board::Board(int x, int y, float width, float height, std::string name) 
 	: 

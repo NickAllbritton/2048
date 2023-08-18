@@ -48,7 +48,8 @@ void Game::events(sf::RenderWindow& wnd)
 			break;
 		case sf::Event::KeyPressed:
 		{
-			if(!inProgress.first && !menu.loadMenu.inThisMenu) // if player is in the menu and not in the load game menu
+			if(event.key.code == sf::Keyboard::Key::Q) wnd.close(); // close the game by pressing q
+			else if(!inProgress.first && !menu.loadMenu.inThisMenu) // if player is in the menu and not in the load game menu
 			{
 				switch(event.key.code)
 				{
